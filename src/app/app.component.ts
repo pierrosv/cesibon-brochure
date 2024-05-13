@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {TranslateService} from "@ngx-translate/core";
 import {LanguageService} from "./language.service";
+import {GoogleAnalyticsService} from "./app/services";
 
 @Component({
   selector: 'app-root',
@@ -20,10 +21,12 @@ export class AppComponent {
   ];
 
   constructor(public translateSrv: TranslateService,
+              private googleAnalyticsSrv: GoogleAnalyticsService,
               public languageService: LanguageService) {
     translateSrv.addLangs(['el', 'en']);
     translateSrv.setDefaultLang('el');
-    translateSrv.use('en')
+    translateSrv.use('en');
+    this.googleAnalyticsSrv.trackEvent('flyer_loaded', 'flyer loaded', 'page_load');
   }
 
   setLanguage(text: string, lang: string, flag: string) {
@@ -32,5 +35,6 @@ export class AppComponent {
     this.cookieValue = lang;
     this.displayLang = lang;
     this.languageService.setLanguage(lang);
+    this.googleAnalyticsSrv.trackEvent('flyer_changed_lang_' + lang, 'flyer changed lang to ' + lang, 'user_action');
   }
 }
